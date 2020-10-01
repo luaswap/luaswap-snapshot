@@ -127,14 +127,19 @@ const actions = {
         ]
       ];
       const spaceStrategies = payload.space.strategies || defaultStrategies;
-      const scores: any = await getScores(
-        spaceStrategies,
-        rootState.web3.network.chainId,
-        providers.rpc,
-        Object.keys(result.votes),
-        // @ts-ignore
-        blockTag
-      );
+      let scores;
+      try {
+        scores = await getScores(
+          spaceStrategies,
+          rootState.web3.network.chainId,
+          providers.rpc,
+          Object.keys(result.votes),
+          // @ts-ignore
+          blockTag
+        );
+      } catch (e) {
+        scores = [{}];
+      }
       console.log('Scores', scores);
       result.votes = Object.fromEntries(
         Object.entries(result.votes)
@@ -189,14 +194,19 @@ const actions = {
           { address: space.address, decimals: space.decimals }
         ]
       ];
-      let scores: any = await getScores(
-        space.strategies || defaultStrategies,
-        rootState.web3.network.chainId,
-        providers.rpc,
-        [address],
-        // @ts-ignore
-        blockTag
-      );
+      let scores;
+      try {
+        scores = await getScores(
+          space.strategies || defaultStrategies,
+          rootState.web3.network.chainId,
+          providers.rpc,
+          [address],
+          // @ts-ignore
+          blockTag
+        );
+      } catch (e) {
+        scores = [{}];
+      }
       scores = scores.map((score: any) =>
         Object.values(score).reduce((a, b: any) => a + b, 0)
       );
